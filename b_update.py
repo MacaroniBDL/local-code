@@ -98,7 +98,7 @@ def update_inter(fname, yday_state_results, yday_counties_results):
     #ciel all of the values in column F + 3259 for counties and e + 57 for states
     # state_cell = states_data["E" + str(row)].value
     # county_cell = counties_data["F" + str(row)].value
-    for row in range(2, 3259):
+    for row in range(2, 3258):
         if counties_data["F" + str(row)].value > 0 and counties_data["F" + str(row)].value < inf:
             counties_data["F" + str(row)].value = ceil(counties_data["F" + str(row)].value)
     
@@ -229,7 +229,7 @@ if __name__ == "__main__":
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
     county_file = askopenfilename() # show an "Open" dialog box and return the path to the selected file
     
-    ndex = 0
+    index = 0
     for pos, i in enumerate(county_file):
         if i == "/":
             index = pos

@@ -7,26 +7,31 @@ import pandas as pd
 import requests
 from openpyxl.utils.dataframe import dataframe_to_rows
 from pandasql import sqldf
+from tkinter import Tk  # from tkinter import Tk for Python 3.x
+from tkinter.filedialog import askopenfilename
 
-states_url = "https://github.com/nytimes/covid-19-data/raw/master/rolling-averages/us-states.csv"
-states_download = requests.get(states_url).content
+def covid_stats():
+    states_url = "https://github.com/nytimes/covid-19-data/raw/master/rolling-averages/us-states.csv"
+    states_download = requests.get(states_url).content
 
-df_states = pd.read_csv(io.StringIO(states_download.decode('utf-8')))
+    df_states = pd.read_csv(io.StringIO(states_download.decode('utf-8')))
 
-counties_url = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/rolling-averages/us-counties-recent.csv"
-counties_download = requests.get(counties_url).content
+    counties_url = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/rolling-averages/us-counties-recent.csv"
+    counties_download = requests.get(counties_url).content
 
-df_counties = pd.read_csv(io.StringIO(counties_download.decode('utf-8')))
+    df_counties = pd.read_csv(io.StringIO(counties_download.decode('utf-8')))
 
-#after creating data frames fro each of the 
-#print(df_states.head)
-yday = date.today() - timedelta(days = 1)
-yday = str(yday)
+    #after creating data frames fro each of the 
+    #print(df_states.head)
+    yday = date.today() - timedelta(days = 1)
+    yday = str(yday)
 
-q_states = f"SELECT date, state, cases_avg FROM df_states WHERE date = '{yday}'"
-q_counties = f"SELECT date, county, state, cases_avg FROM df_counties WHERE date = '{yday}'"
-yday_state_results = sqldf(q_states)
-yday_counties_results = sqldf(q_counties)
+    q_states = f"SELECT date, state, cases_avg FROM df_states WHERE date = '{yday}'"
+    q_counties = f"SELECT date, county, state, cases_avg FROM df_counties WHERE date = '{yday}'"
+    yday_state_results = sqldf(q_states)
+    yday_counties_results = sqldf(q_counties)
+
+    return yday_state_results, yday_counties_results
 
 #------------------------------------------------------------------------------------------------------------------------------
 #comments for my sanity
@@ -72,7 +77,9 @@ def save_data(fname):
     wb.save(fname)    
 
 def main(fdir):
-    ftemp = f"NYT Case Avg. Yesterday.xlsx"
+    Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+    ftemp = askopenfilename()
+    
 
     wb = opyxl.load_workbook(filename=ftemp)
 
